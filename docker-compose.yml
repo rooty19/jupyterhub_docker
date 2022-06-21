@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  jupyter:
+    container_name: HUB
+    restart: on-failure:3
+    hostname: juputerhub.test.local
+    build:
+      context:  ./jupyterhub_CUDA/
+      dockerfile: Dockerfile
+    ports:
+      - 8100:8000
+      - 8122:8022
+    volumes:
+      - type: bind
+        source: "./conf"
+        target: "/conf"
+      - type: bind
+        source: "/home"
+        target: "/home"  
+    deploy:
+      resources:
+        reservations:
+          devices:
+           - driver: nvidia
+             capabilities: [utility, compute, video]
