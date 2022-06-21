@@ -11,7 +11,6 @@ if [ -e /var/run/sssd.pid ]; then
 fi
 
 /etc/init.d/sssd start
-/etc/init.d/sshd start
 /etc/init.d/ssh start
 
 echo "Waiting SSSD..."
@@ -20,6 +19,12 @@ sleep 3
 cat <<EOF >> /opt/jupyterhub_config.py
 c.PAMAuthenticator.admin_groups = {'ADMIN-LDAP', 'ADMIN-GPU'}
 EOF
+
+if [ $DEBUG == 1 ]; then
+    useradd -m --uid 10001 --groups sudo test && echo test:0000 | chpasswd
+    mkdir /home/test/notebook && chown test:test /home/test/notebook && chsh -s /bin/bash test 
+    echo 'c.Authenticator.admin_users = {"test"}' >> /opt/jupyterhub_config.py
+fi
 
 echo '#!/bin/sh' > /opt/jupyterhub_docker.sh
 echo 'export PS1="\[\e[1;32m\]\u@Docker\[\e[1;36m\]\[\e[m\]:\[\e[1;36m\][ \w ]\[\e[m\]:\$ "' >> /opt/jupyterhub_docker.sh

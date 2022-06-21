@@ -4,8 +4,6 @@ pyEXEC=python3.8
 venvname=py38_tf2
 
 packages=("tensorflow==2.4.0" \
-         "torch==1.5.1+cu101" \
-         "torchvision==0.6.1+cu101" \
          "japanize-matplotlib" \
          "matplotlib" \
          "pandas" \

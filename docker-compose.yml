@@ -8,18 +8,27 @@ services:
       context:  ./jupyterhub_CUDA/
       dockerfile: Dockerfile
     ports:
-      - 8100:8000
-      - 8122:8022
+      - 8900:8000
+      - 8922:8022
     volumes:
-      - type: bind
-        source: "./conf"
-        target: "/conf"
-      - type: bind
-        source: "/home"
-        target: "/home"  
+      - fs:/home
+      - sssdconf:/conf
+    environment:
+      - DEBUG=0
     deploy:
       resources:
         reservations:
           devices:
            - driver: nvidia
              capabilities: [utility, compute, video]
+volumes:
+  fs:
+    driver_opts:
+      type: "nfs"
+      o: "addr=192.168.100.1,rw,local_lock=all,noatime,rdma,port=20049"
+      device: ":/fs"
+  sssdconf:
+    driver_opts:
+      type: none
+      device: "./conf"
+      o: bind
