@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.0-base
+FROM nvidia/cuda:11.4.2-base-ubuntu20.04
 
 LABEL maintainer="rooty19 <rooty19@outlook.com>" \
       version="cuda-11.0-2206"
@@ -7,10 +7,7 @@ USER root
 
 ENV DEBIAN_FRONTEND noninteractive
 
-# GPG key update: https://developer.nvidia.com/blog/updating-the-cuda-linux-gpg-repository-key/
-RUN apt-key del 7fa2af80 \
- && apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/3bf863cc.pub \
- && apt-get update \
+RUN apt-get update \
  && apt-get install -yq locales \
  && locale-gen en_US.UTF-8 && update-locale LANG=en_US.UTF-8 \
  && apt-get install -yq software-properties-common \
@@ -18,8 +15,6 @@ RUN apt-key del 7fa2af80 \
  && apt-get install -yq --no-install-recommends \
     build-essential \
     ca-certificates \
-    python3-dev \
-    python3-pip \
     python3-pycurl \
     libgl1-mesa-dev \
     python3-dev \
@@ -46,8 +41,8 @@ RUN apt-key del 7fa2af80 \
  # jupyter-matplotlib requires >=nodejs-12.0
  && curl -sL https://deb.nodesource.com/setup_16.x | bash - \
  && apt install nodejs \
- && npm install -g npm \
- && npm install -g configurable-http-proxy \
+ && npm install --location=global npm \
+ && npm install --location=global configurable-http-proxy \
  && python3 -m pip install --upgrade setuptools pip wheel \
  && pip install jupyterhub jupyterlab jupyterlab_nvdashboard ipympl\
  && jupyter labextension install @jupyter-widgets/jupyterlab-manager && jupyter labextension install jupyter-matplotlib \
